@@ -248,13 +248,15 @@ class Meetup(object):
         if updated != event.updated:
             event.name = raw_event['name']
             event.description = raw_event['description']
-            event.city = self.__parse_city(raw_event['venue'])
             event.time = epoch_to_datetime(raw_event['time'])
             event.utc_offset = raw_event['utc_offset'] / 3600000
             event.created = epoch_to_datetime(raw_event['created'])
             event.updated = updated
             event.status = raw_event['status']
             event.event_url = raw_event['event_url']
+
+            if 'venue' in raw_event:
+                event.city = self.__parse_city(raw_event['venue'])
 
         event.headcount = raw_event['headcount']
 

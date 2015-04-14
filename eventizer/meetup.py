@@ -247,7 +247,7 @@ class Meetup(object):
 
         if updated != event.updated:
             event.name = raw_event['name']
-            event.description = raw_event['description']
+            event.description = raw_event.get('description', None)
             event.time = epoch_to_datetime(raw_event['time'])
             event.utc_offset = raw_event['utc_offset'] / 3600000
             event.created = epoch_to_datetime(raw_event['created'])

@@ -119,7 +119,7 @@ class Member(UniqueObject, Base):
     # many to many members-topics relationship
     topics = relationship('Topic', secondary=members_topics_table)
 
-    __table_args__ = (UniqueConstraint('meetup_id', 
+    __table_args__ = (UniqueConstraint('meetup_id',
                                        name='_member_unique'),
                       {'mysql_charset': 'utf8'})
 
@@ -168,7 +168,7 @@ class Group(UniqueObject, Base):
     events = relationship('Event',
                           cascade="save-update, merge, delete")
 
-    __table_args__ = (UniqueConstraint('meetup_id', 
+    __table_args__ = (UniqueConstraint('meetup_id',
                                        name='_group_unique'),
                       {'mysql_charset': 'utf8'})
 
@@ -181,7 +181,7 @@ class Event(UniqueObject, Base):
     __tablename__ = 'events'
 
     id = Column(Integer, primary_key=True)
-    meetup_id = Column(Integer)
+    meetup_id = Column(String(64))
     name = Column(String(256))
     description = Column(Text())
     headcount = Column(Integer())
@@ -204,7 +204,7 @@ class Event(UniqueObject, Base):
     rsvps = relationship('RSVP',
                          cascade="save-update, merge, delete")
 
-    __table_args__ = (UniqueConstraint('meetup_id', 
+    __table_args__ = (UniqueConstraint('meetup_id',
                                        name='_event_unique'),
                       {'mysql_charset': 'utf8'})
 
@@ -228,7 +228,7 @@ class RSVP(UniqueObject, Base):
     event = relationship('Event')
     member = relationship('Member', foreign_keys=[member_id])
 
-    __table_args__ = (UniqueConstraint('meetup_id', 
+    __table_args__ = (UniqueConstraint('meetup_id',
                                        name='_rsvp_unique'),
                       {'mysql_charset': 'utf8'})
 

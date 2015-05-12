@@ -77,6 +77,7 @@ class MeetupIterator(object):
     def _fetch(self):
         r = requests.get(self.url, params=self.params,
                          headers=self.headers)
+
         json = r.json()
 
         if 'code' in json:
@@ -214,6 +215,12 @@ class Meetup(object):
                   'event_id' : event_id}
 
         for raw_rsvp in MeetupIterator(url, params, HEADERS):
+            # According to the documentation, ff the RSVP is for a host
+            # of a repeating event that hasn't been RSVP'd to by others,
+            # the id in the response will be -1. So, we ignore it.
+            if raw_rsvp['rsvp_id'] == -1:
+                continue
+
             rsvp = self.__parse_rsvp(raw_rsvp)
             rsvp.member = self._fetch_member(raw_rsvp['member']['member_id'])
             yield rsvp

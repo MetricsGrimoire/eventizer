@@ -15,6 +15,9 @@ python setup.py install
 
 ## Usage
 ```
+luis@hogaza:~/repos/eventizer$ eventizer --help
+usage: Usage: 'eventizer [options] <group>
+
 positional arguments:
   group                 Group name on Meetup
 

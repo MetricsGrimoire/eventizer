@@ -21,6 +21,7 @@
 #
 
 import datetime
+import time
 import urlparse
 
 import requests
@@ -31,6 +32,7 @@ from eventizer.db.model import City, Category, Topic, Group, Event,\
 
 MEETUP_API_URL = "https://api.meetup.com/2/"
 HEADERS = {'User-Agent': 'eventizer/0.0.1'}
+MIN_LIMIT_RATE = 5
 
 
 class NotFoundError(Exception):
@@ -62,6 +64,19 @@ def epoch_to_datetime(epoch):
     return datetime.datetime.fromtimestamp(ts)
 
 
+def check_rate_limit(response):
+    headers = response.headers
+
+    if 'X-RateLimit-Remaining' not in headers:
+        return
+
+    remaining = int(headers['X-RateLimit-Remaining'])
+    reset = int(headers['X-RateLimit-Reset'])
+
+    if remaining <= MIN_LIMIT_RATE:
+        time.sleep(reset)
+
+
 class MeetupIterator(object):
 
     def __init__(self, url, params, headers):
@@ -83,6 +98,8 @@ class MeetupIterator(object):
         if 'code' in json:
             msg = '%s. %s. %s' % (json['code'], json['problem'], json['details'])
             raise MeetupError(msg)
+
+        check_rate_limit(r)
 
         return json
 
@@ -142,6 +159,8 @@ class Meetup(object):
         if json['meta']['total_count'] != 1:
             raise NotFoundError(name, 'group')
 
+        check_rate_limit(r)
+
         results = json['results']
 
         raw_group = results[0]
@@ -184,6 +203,8 @@ class Meetup(object):
         if 'code' in json:
             msg = '%s. %s. %s' % (json['code'], json['problem'], json['details'])
             raise MeetupError(msg)
+
+        check_rate_limit(r)
 
         member = self.__parse_member(json)
 

@@ -33,6 +33,7 @@ from eventizer.db.model import City, Category, Topic, Group, Event,\
 MEETUP_API_URL = "https://api.meetup.com/2/"
 HEADERS = {'User-Agent': 'eventizer/0.0.1'}
 MIN_LIMIT_RATE = 5
+WAIT_TIME = 2
 
 
 class NotFoundError(Exception):
@@ -112,6 +113,7 @@ class MeetupIterator(object):
             raise StopIteration
 
         # Fetch new set of releases
+        time.sleep(WAIT_TIME)
         json = self._fetch()
 
         self.results = json['results']
@@ -224,6 +226,8 @@ class Meetup(object):
 
         for raw_event in MeetupIterator(url, params, HEADERS):
             event = self.__parse_event(raw_event)
+
+            time.sleep(WAIT_TIME)
 
             for rvps in self._fetch_rsvps(event.meetup_id):
                 event.rsvps.append(rvps)

@@ -231,7 +231,7 @@ class Meetup(object):
 
             for rvps in self._fetch_rsvps(event.meetup_id):
                 event.rsvps.append(rvps)
-                yield event
+            yield event
 
     def _fetch_rsvps(self, event_id):
         url = urlparse.urljoin(MEETUP_API_URL, 'rsvps')

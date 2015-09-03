@@ -278,10 +278,14 @@ class Meetup(object):
         updated = epoch_to_datetime(raw_event['updated'])
 
         if updated != event.updated:
+            utc_time = raw_event['time']
+            utc_offset = raw_event['utc_offset']
+
             event.name = raw_event['name']
             event.description = raw_event.get('description', None)
-            event.time = epoch_to_datetime(raw_event['time'])
-            event.utc_offset = raw_event['utc_offset'] / 3600000
+            event.time = epoch_to_datetime(utc_time)
+            event.utc_offset =  utc_offset / 3600000
+            event.local_time = epoch_to_datetime(utc_time + utc_offset)
             event.created = epoch_to_datetime(raw_event['created'])
             event.updated = updated
             event.status = raw_event['status']

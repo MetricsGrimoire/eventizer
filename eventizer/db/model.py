@@ -192,7 +192,8 @@ class Event(UniqueObject, Base):
     created = Column(DateTime(timezone=False))
     updated = Column(DateTime(timezone=False))
     time = Column(DateTime(timezone=False))
-    utf_offset = Column(Integer())
+    utc_offset = Column(Integer())
+    local_time = Column(DateTime(timezone=False))
 
     group_id = Column(Integer,
                       ForeignKey('groups.id', ondelete='CASCADE'),)

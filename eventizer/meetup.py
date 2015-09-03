@@ -366,10 +366,13 @@ class Meetup(object):
                                   meetup_id=member_id)
 
         if not member.id:
-            member.link = raw_member['link']
-            member.joined = epoch_to_datetime(raw_member['joined'])
+            member.link = raw_member.get('link', None)
+            if 'joined' in raw_member:
+                member.joined = epoch_to_datetime(raw_member['joined'])
+            else:
+                member.joined = None
 
-        member.name = raw_member['name']
+        member.name = raw_member.get('name', None)
         member.status = raw_member['status']
         member.city = self.__parse_city(raw_member)
 

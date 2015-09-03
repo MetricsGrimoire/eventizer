@@ -261,7 +261,7 @@ class Meetup(object):
             group.organizer = self._fetch_member(raw_group['organizer']['member_id'])
 
         group.rating = raw_group['rating']
-        group.description = raw_group['description']
+        group.description = raw_group.get('description', None)
         group.city = self.__parse_city(raw_group)
         group.category = self.__parse_category(raw_group['category'])
 

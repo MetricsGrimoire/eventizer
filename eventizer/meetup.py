@@ -312,7 +312,7 @@ class Meetup(object):
 
     def __parse_city(self, raw_city):
         country = raw_city['country'].upper()
-        city = raw_city['city']
+        city = raw_city['city'].lower()
         key = country + ':' + city
 
         if key in self.CITIES_CACHE:

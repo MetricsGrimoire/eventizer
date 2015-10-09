@@ -26,6 +26,9 @@ import urlparse
 
 import requests
 
+import pytz
+from dateutil.parser import parse
+
 from eventizer.db.model import City, Category, Topic, Group, Event,\
     Member, RSVP
 
@@ -62,8 +65,16 @@ class MeetupError(Exception):
 
 def epoch_to_datetime(epoch):
     ts = epoch / 1000.0
-    return datetime.datetime.fromtimestamp(ts)
 
+    # We want to get the time in UTC but we do not want to
+    # deal with the sqlalchemy way of handling time zones,
+    # so we get the time in UTC but we return a
+    # timezone-unaware datetime object
+    dttz = datetime.datetime.fromtimestamp(ts,tz=pytz.UTC)
+    str_dttz = dttz.strftime("%Y-%m-%d %H:%M:%S")
+    dt = parse(str_dttz)
+
+    return dt
 
 def check_rate_limit(response):
     headers = response.headers
